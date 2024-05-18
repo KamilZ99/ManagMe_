@@ -14,16 +14,38 @@ const StoryList: React.FC<StoryListProps> = ({ projectId }) => {
   const filteredStories = stories.filter(story => filter === 'all' || story.status === filter);
 
   return (
-    <div>
-      <div>
-        <button onClick={() => setFilter('all')}>All</button>
-        <button onClick={() => setFilter('todo')}>To Do</button>
-        <button onClick={() => setFilter('doing')}>Doing</button>
-        <button onClick={() => setFilter('done')}>Done</button>
+    <div className="p-4 bg-gray-100 rounded-lg shadow-md animate-fadeIn">
+      <div className="flex space-x-2 mb-4">
+        <button 
+          onClick={() => setFilter('all')} 
+          className={`px-4 py-2 rounded ${filter === 'all' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'} focus:outline-none`}
+        >
+          All 📋
+        </button>
+        <button 
+          onClick={() => setFilter('todo')} 
+          className={`px-4 py-2 rounded ${filter === 'todo' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'} focus:outline-none`}
+        >
+          To Do 📋
+        </button>
+        <button 
+          onClick={() => setFilter('doing')} 
+          className={`px-4 py-2 rounded ${filter === 'doing' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'} focus:outline-none`}
+        >
+          Doing 📋
+        </button>
+        <button 
+          onClick={() => setFilter('done')} 
+          className={`px-4 py-2 rounded ${filter === 'done' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'} focus:outline-none`}
+        >
+          Done 📋
+        </button>
       </div>
-      {filteredStories.map(story => (
-        <StoryItem key={story.id} story={story} />
-      ))}
+      <div>
+        {filteredStories.map(story => (
+          <StoryItem key={story.id} story={story} />
+        ))}
+      </div>
     </div>
   );
 };

@@ -53,34 +53,110 @@ const TaskForm: React.FC<TaskFormProps> = ({ storyId }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Task Name" required />
-      <textarea value={description} onChange={e => setDescription(e.target.value)} placeholder="Task Description" required />
-      <select value={priority} onChange={e => setPriority(e.target.value as 'low' | 'medium' | 'high')}>
-        <option value="low">Low</option>
-        <option value="medium">Medium</option>
-        <option value="high">High</option>
-      </select>
-      <input type="number" value={estimatedTime} onChange={e => setEstimatedTime(Number(e.target.value))} placeholder="Estimated Time (hours)" required />
-      <select value={ownerId} onChange={e => setOwnerId(e.target.value)}>
-        <option value="">Select Owner</option>
-        <option value="devops">DevOps</option>
-        <option value="developer">Developer</option>
-      </select>
-      <select value={status} onChange={e => {
-        const newStatus = e.target.value as 'todo' | 'doing' | 'done';
-        setStatus(newStatus);
-        if (newStatus === 'doing') {
-          setStartDate(new Date());
-        } else if (newStatus === 'done') {
-          setEndDate(new Date());
-        }
-      }}>
-        <option value="todo">To Do</option>
-        <option value="doing">Doing</option>
-        <option value="done">Done</option>
-      </select>
-      <button type="submit">{editingTask ? 'Update' : 'Add'} Task</button>
+    <form onSubmit={handleSubmit} className="bg-white shadow-md rounded-lg p-6 mb-4 animate-fadeIn">
+      <h2 className="text-2xl font-bold mb-4">Create New Task</h2>
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
+          Task Name 📝
+        </label>
+        <input
+          type="text"
+          id="name"
+          value={name}
+          onChange={e => setName(e.target.value)}
+          placeholder="Task Name"
+          required
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
+          Task Description 📝
+        </label>
+        <textarea
+          id="description"
+          value={description}
+          onChange={e => setDescription(e.target.value)}
+          placeholder="Task Description"
+          required
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="priority">
+          Priority 🚀
+        </label>
+        <select
+          id="priority"
+          value={priority}
+          onChange={e => setPriority(e.target.value as 'low' | 'medium' | 'high')}
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        >
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="estimatedTime">
+          Estimated Time (hours) ⏱️
+        </label>
+        <input
+          type="number"
+          id="estimatedTime"
+          value={estimatedTime}
+          onChange={e => setEstimatedTime(Number(e.target.value))}
+          placeholder="Estimated Time (hours)"
+          required
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="ownerId">
+          Owner 👤
+        </label>
+        <select
+          id="ownerId"
+          value={ownerId}
+          onChange={e => setOwnerId(e.target.value)}
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        >
+          <option value="">Select Owner</option>
+          <option value="devops">DevOps</option>
+          <option value="developer">Developer</option>
+        </select>
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="status">
+          Status 📈
+        </label>
+        <select
+          id="status"
+          value={status}
+          onChange={e => {
+            const newStatus = e.target.value as 'todo' | 'doing' | 'done';
+            setStatus(newStatus);
+            if (newStatus === 'doing') {
+              setStartDate(new Date());
+            } else if (newStatus === 'done') {
+              setEndDate(new Date());
+            }
+          }}
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        >
+          <option value="todo">To Do</option>
+          <option value="doing">Doing</option>
+          <option value="done">Done</option>
+        </select>
+      </div>
+      <div className="flex items-center justify-between">
+        <button
+          type="submit"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        >
+          {editingTask ? 'Update' : 'Add'} Task
+        </button>
+      </div>
     </form>
   );
 };
