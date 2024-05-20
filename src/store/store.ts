@@ -2,17 +2,19 @@ import { configureStore } from '@reduxjs/toolkit';
 import projectReducer from './slices/projectSlice';
 import storyReducer from './slices/storySlice';
 import taskReducer from './slices/taskSlice';
-import authReducer, { login, logout, checkAuth } from './slices/authSlice'; // Import authReducer oraz akcje login, logout i checkAuth
+import authReducer from './slices/authSlice';
 
 const store = configureStore({
   reducer: {
     project: projectReducer,
     story: storyReducer,
     task: taskReducer,
-    auth: authReducer, // Dodanie authReducer
+    auth: authReducer,
   },
 });
 
 export type RootState = ReturnType<typeof store.getState>;
-export { login, logout, checkAuth }; // Eksportowanie akcji login, logout i checkAuth
+export type AppDispatch = typeof store.dispatch;
+
+export { setUser, login, logout, checkAuth } from './slices/authSlice';
 export default store;

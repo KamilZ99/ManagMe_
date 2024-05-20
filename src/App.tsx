@@ -12,6 +12,7 @@ import { AuthProvider } from './auth/authContext';
 import './index.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout as logoutAction, checkAuth, RootState } from './store/store';
+import GoogleLoginComponent from './auth/GoogleLoginComponent';
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
@@ -62,7 +63,10 @@ const NavBar: React.FC = () => {
           <Link to="/projects/:projectId/stories" className="hover:underline">Stories</Link>
           <Link to="/stories/:storyId/tasks" className="hover:underline">Tasks</Link>
           {isAuthenticated && (
-            <button onClick={handleLogout} className="hover:underline">Logout</button>
+            <>
+              <GoogleLoginComponent />
+              <button onClick={handleLogout} className="hover:underline">Logout</button>
+            </>
           )}
         </div>
       </div>
