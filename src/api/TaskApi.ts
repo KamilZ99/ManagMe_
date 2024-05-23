@@ -8,9 +8,9 @@ interface TaskData {
   storyId: string;
   estimatedTime: number;
   status: 'todo' | 'doing' | 'done';
-  creationDate: string; // przechowywane jako string w localStorage
-  startDate?: string; // przechowywane jako string w localStorage
-  endDate?: string; // przechowywane jako string w localStorage
+  creationDate: string; 
+  startDate?: string; 
+  endDate?: string; 
   ownerId?: string;
 }
 
@@ -20,7 +20,6 @@ class TaskApi {
   static getTasks(): Task[] {
     const tasks = localStorage.getItem(this.STORAGE_KEY);
     const parsedTasks: TaskData[] = tasks ? JSON.parse(tasks) : [];
-    // Konwersja stringów na obiekty Date
     return parsedTasks.map((task: TaskData) => new Task(
       task.id,
       task.name,

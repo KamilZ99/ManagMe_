@@ -16,5 +16,6 @@ const store = configureStore({
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
-export { setUser, login, logout, checkAuth } from './slices/authSlice';
+export { fetchProjects, createProject, editProject, removeProject } from './slices/projectSlice';
+export { login, logout, checkAuth } from './slices/authSlice';
 export default store;

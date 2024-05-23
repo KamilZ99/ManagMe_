@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../store/store';
-import { addProject, updateProject, setEditingProject } from '../store/slices/projectSlice';
+import { RootState, AppDispatch } from '../store/store';
+import { createProject, editProject, setEditingProject } from '../store/slices/projectSlice';
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 
 const ProjectForm: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const editingProject = useSelector((state: RootState) => state.project.editingProject);
   const [name, setName] = useState(editingProject ? editingProject.name : '');
@@ -21,15 +21,16 @@ const ProjectForm: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const project = { id: editingProject ? editingProject.id : uuidv4(), name, description };
     if (editingProject) {
-      dispatch(updateProject({ ...editingProject, name, description }));
+      dispatch(editProject(project));
     } else {
-      dispatch(addProject({ id: uuidv4(), name, description }));
+      dispatch(createProject(project));
     }
     setName('');
     setDescription('');
     dispatch(setEditingProject(null));
-    navigate('/'); // Nawiguj do strony głównej po dodaniu projektu
+    navigate('/'); 
   };
 
   return (

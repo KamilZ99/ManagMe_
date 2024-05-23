@@ -1,34 +1,40 @@
+// api/ProjectApi.ts
+import axios from 'axios';
 import Project from '../models/Project';
 
-class ProjectApi {
-  private static readonly STORAGE_KEY = 'projects';
+const API_URL = 'http://localhost:3000/projects';
 
-  static getProjects(): Project[] {
-    const projects = localStorage.getItem(this.STORAGE_KEY);
-    return projects ? JSON.parse(projects) : [];
-  }
+export const getProjects = async (): Promise<Project[]> => {
+  const response = await axios.get(API_URL, {
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+  });
+  return response.data;
+};
 
-  static saveProjects(projects: Project[]): void {
-    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(projects));
-  }
+export const addProject = async (project: Project): Promise<Project> => {
+  const response = await axios.post(API_URL, project, {
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+  });
+  return response.data;
+};
 
-  static addProject(project: Project): void {
-    const projects = this.getProjects();
-    projects.push(project);
-    this.saveProjects(projects);
-  }
+export const updateProject = async (project: Project): Promise<Project> => {
+  const response = await axios.put(`${API_URL}/${project.id}`, project, {
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+  });
+  return response.data;
+};
 
-  static updateProject(updatedProject: Project): void {
-    let projects = this.getProjects();
-    projects = projects.map(project => project.id === updatedProject.id ? updatedProject : project);
-    this.saveProjects(projects);
-  }
-
-  static deleteProject(projectId: string): void {
-    let projects = this.getProjects();
-    projects = projects.filter(project => project.id !== projectId);
-    this.saveProjects(projects);
-  }
-}
-
-export default ProjectApi;
+export const deleteProject = async (projectId: string): Promise<void> => {
+  await axios.delete(`${API_URL}/${projectId}`, {
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+  });
+};

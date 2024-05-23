@@ -24,7 +24,6 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
     const dy = e.clientY - startY;
     const distance = Math.sqrt(dx * dx + dy * dy);
 
-    // If the mouse has moved more than a few pixels, it was likely a drag, not a click
     if (distance < 5) {
       setModalOpen(true);
     }

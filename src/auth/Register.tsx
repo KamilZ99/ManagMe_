@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 const Register: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -12,7 +13,7 @@ const Register: React.FC = () => {
       const response = await fetch('http://localhost:3000/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ username, password, email })
       });
       if (!response.ok) {
         throw new Error('Registration failed');
@@ -32,6 +33,10 @@ const Register: React.FC = () => {
       <div>
         <label>Password:</label>
         <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+      </div>
+      <div>
+        <label>Email:</label>
+        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
       </div>
       <button type="submit">Register</button>
     </form>

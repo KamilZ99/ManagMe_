@@ -1,8 +1,16 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
+interface User {
+  id: string;
+  email: string;
+  username: string;
+  role: string;
+}
+
 interface AuthContextProps {
   isAuthenticated: boolean;
-  login: () => void;
+  user: User | null;
+  login: (token: string, user: User) => void;
   logout: () => void;
 }
 
@@ -14,19 +22,22 @@ interface AuthProviderProps {
 
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!localStorage.getItem('token'));
+  const [user, setUser] = useState<User | null>(null);
 
-  const login = () => {
+  const login = (token: string, user: User) => {
+    localStorage.setItem('token', token);
     setIsAuthenticated(true);
+    setUser(user);
   };
 
   const logout = () => {
     localStorage.removeItem('token');
-    localStorage.removeItem('refreshToken');
     setIsAuthenticated(false);
+    setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
@@ -40,4 +51,4 @@ export const useAuth = () => {
   return context;
 };
 
-export { AuthProvider };  // Poprawny eksport AuthProvider
+export { AuthProvider };

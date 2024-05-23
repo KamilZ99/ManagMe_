@@ -2,14 +2,15 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Project from '../models/Project';
-import { deleteProject, setEditingProject } from '../store/slices/projectSlice';
+import { setEditingProject, removeProject } from '../store/slices/projectSlice';
+import { AppDispatch } from '../store/store'; // Import AppDispatch
 
 interface ProjectItemProps {
   project: Project;
 }
 
 const ProjectItem: React.FC<ProjectItemProps> = ({ project }) => {
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleEdit = () => {
@@ -17,7 +18,7 @@ const ProjectItem: React.FC<ProjectItemProps> = ({ project }) => {
   };
 
   const handleDelete = () => {
-    dispatch(deleteProject(project.id));
+    dispatch(removeProject(project.id));
   };
 
   const handleViewStories = () => {

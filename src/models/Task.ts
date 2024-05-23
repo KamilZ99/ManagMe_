@@ -10,7 +10,7 @@ export default class Task {
       public creationDate: Date,
       public startDate?: Date,
       public endDate?: Date,
-      public ownerId?: string // ID użytkownika odpowiedzialnego za zadanie
+      public ownerId?: string 
     ) {}
   }
   

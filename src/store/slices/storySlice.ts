@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import Story from '../../models/Story';
-import StoryApi from '../../api/StoryApi'; // Poprawny import domyślny
+import StoryApi from '../../api/StoryApi'; 
 
 interface StoryState {
   stories: Story[];

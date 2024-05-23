@@ -31,4 +31,4 @@ class StoryApi {
   }
 }
 
-export default StoryApi; // Upewnij się, że ten eksport jest poprawnie umieszczony
+export default StoryApi;
