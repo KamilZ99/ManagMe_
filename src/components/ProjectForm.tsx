@@ -1,14 +1,17 @@
+// ProjectForm.tsx
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
 import { createProject, editProject, setEditingProject } from '../store/slices/projectSlice';
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
+import { Project } from '../models/Project';
 
 const ProjectForm: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const editingProject = useSelector((state: RootState) => state.project.editingProject);
+  const authUser = useSelector((state: RootState) => state.auth.user); // Get the authenticated user
   const [name, setName] = useState(editingProject ? editingProject.name : '');
   const [description, setDescription] = useState(editingProject ? editingProject.description : '');
 
@@ -21,7 +24,14 @@ const ProjectForm: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const project = { id: editingProject ? editingProject.id : uuidv4(), name, description };
+    if (!authUser) return; // Ensure user is authenticated
+
+    const project: Project = {
+      _id: editingProject ? editingProject._id : uuidv4(),
+      name,
+      description,
+      ownerId: authUser.id // Set the ownerId to the authenticated user's id
+    };
     if (editingProject) {
       dispatch(editProject(project));
     } else {

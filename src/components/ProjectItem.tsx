@@ -1,7 +1,8 @@
+// ProjectItem.tsx
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import Project from '../models/Project';
+import { Project } from '../models/Project';
 import { setEditingProject, removeProject } from '../store/slices/projectSlice';
 import { AppDispatch } from '../store/store'; // Import AppDispatch
 
@@ -18,11 +19,11 @@ const ProjectItem: React.FC<ProjectItemProps> = ({ project }) => {
   };
 
   const handleDelete = () => {
-    dispatch(removeProject(project.id));
+    dispatch(removeProject(project._id));
   };
 
   const handleViewStories = () => {
-    navigate(`/projects/${project.id}/stories`);
+    navigate(`/projects/${project._id}/stories`);
   };
 
   return (

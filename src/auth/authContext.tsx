@@ -22,16 +22,18 @@ interface AuthProviderProps {
 
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!localStorage.getItem('token'));
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(JSON.parse(localStorage.getItem('user') || 'null'));
 
   const login = (token: string, user: User) => {
     localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(user));
     setIsAuthenticated(true);
     setUser(user);
   };
 
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     setIsAuthenticated(false);
     setUser(null);
   };

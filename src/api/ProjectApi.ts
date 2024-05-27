@@ -1,11 +1,10 @@
-// api/ProjectApi.ts
 import axios from 'axios';
 import Project from '../models/Project';
 
 const API_URL = 'http://localhost:3000/projects';
 
-export const getProjects = async (): Promise<Project[]> => {
-  const response = await axios.get(API_URL, {
+export const getProjects = async (userId: string): Promise<Project[]> => {
+  const response = await axios.get(`${API_URL}?ownerId=${userId}`, {
     headers: {
       'Authorization': `Bearer ${localStorage.getItem('token')}`
     }
@@ -23,7 +22,7 @@ export const addProject = async (project: Project): Promise<Project> => {
 };
 
 export const updateProject = async (project: Project): Promise<Project> => {
-  const response = await axios.put(`${API_URL}/${project.id}`, project, {
+  const response = await axios.put(`${API_URL}/${project._id}`, project, {
     headers: {
       'Authorization': `Bearer ${localStorage.getItem('token')}`
     }

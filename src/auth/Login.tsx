@@ -26,8 +26,8 @@ const Login: React.FC = () => {
 
       const data = await response.json();
       const user = { id: data.user.id, email: data.user.email, username: data.user.username, role: data.user.role };
-      login(data.token, user);
-      dispatch(loginAction(user)); 
+      login(data.token, user);  // Przechowaj dane użytkownika w kontekście
+      dispatch(loginAction(user));  // Przechowaj dane użytkownika w stanie Redux
       navigate('/');
     } catch (error) {
       console.error('Error logging in:', error);

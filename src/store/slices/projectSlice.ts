@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import Project from '../../models/Project';
 import * as ProjectApi from '../../api/ProjectApi';
+import { RootState } from '../store'
 
 interface ProjectState {
   projects: Project[];
@@ -16,24 +17,44 @@ const initialState: ProjectState = {
   error: null,
 };
 
-export const fetchProjects = createAsyncThunk('projects/fetchProjects', async () => {
-  return await ProjectApi.getProjects();
-});
+export const fetchProjects = createAsyncThunk<Project[], void, { state: RootState }>(
+  'projects/fetchProjects',
+  async (_, { getState }) => {
+    const state = getState();
+    const userId = state.auth.user?.id;
+    if (!userId) throw new Error('User not authenticated');
+    const response = await ProjectApi.getProjects(userId);
+    return response;
+  }
+);
 
-export const createProject = createAsyncThunk('projects/createProject', async (project: Project) => {
-  const response = await ProjectApi.addProject(project);
-  return response;
-});
+export const createProject = createAsyncThunk<Project, Project, { state: RootState }>(
+  'projects/createProject',
+  async (project, { getState }) => {
+    const state = getState();
+    const userId = state.auth.user?.id;
+    if (!userId) throw new Error('User not authenticated');
+    const newProject = { ...project, ownerId: userId };
+    const response = await ProjectApi.addProject(newProject);
+    return response;
+  }
+);
 
-export const editProject = createAsyncThunk('projects/editProject', async (project: Project) => {
-  const response = await ProjectApi.updateProject(project);
-  return response;
-});
+export const editProject = createAsyncThunk<Project, Project>(
+  'projects/editProject',
+  async (project) => {
+    const response = await ProjectApi.updateProject(project);
+    return response;
+  }
+);
 
-export const removeProject = createAsyncThunk('projects/removeProject', async (projectId: string) => {
-  await ProjectApi.deleteProject(projectId);
-  return projectId;
-});
+export const removeProject = createAsyncThunk<string, string>(
+  'projects/removeProject',
+  async (projectId) => {
+    await ProjectApi.deleteProject(projectId);
+    return projectId;
+  }
+);
 
 const projectSlice = createSlice({
   name: 'project',
@@ -60,13 +81,13 @@ const projectSlice = createSlice({
       state.projects.push(action.payload);
     });
     builder.addCase(editProject.fulfilled, (state, action) => {
-      const index = state.projects.findIndex(p => p.id === action.payload.id);
+      const index = state.projects.findIndex(p => p._id === action.payload._id);
       if (index !== -1) {
         state.projects[index] = action.payload;
       }
     });
     builder.addCase(removeProject.fulfilled, (state, action) => {
-      state.projects = state.projects.filter(project => project.id !== action.payload);
+      state.projects = state.projects.filter(project => project._id !== action.payload);
     });
   },
 });
