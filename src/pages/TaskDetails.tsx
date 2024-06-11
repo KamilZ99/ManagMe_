@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getTasks, createTask, updateTask, deleteTask } from '../api/taskApi';
+import { getTasks, createTask, updateTask, deleteTask } from '../api/TaskApi';
 import TaskForm from '../components/TaskForm';
 import TaskPopup from '../components/TaskPopup';
 import { Task } from '../types';

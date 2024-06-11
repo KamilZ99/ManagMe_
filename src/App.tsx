@@ -6,7 +6,7 @@ import ProjectDetails from './pages/ProjectDetails';
 import StoryDetails from './pages/StoryDetails';
 import TaskDetails from './pages/TaskDetails';
 import Profile from './pages/Profile';
-import Navbar from './components/Navbar';
+import Navbar from './components/NavBar';
 import ThemeSwitcher from './components/ThemeSwitcher';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import WelcomeScreen from './pages/WelcomeScreen';

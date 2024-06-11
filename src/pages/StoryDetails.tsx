@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getStories, createStory, updateStory, deleteStory } from '../api/storyApi';
+import { getStories, createStory, updateStory, deleteStory } from '../api/StoryApi';
 import StoryForm from '../components/StoryForm';
 import { Story } from '../types';
 

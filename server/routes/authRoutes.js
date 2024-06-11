@@ -107,6 +107,7 @@ router.post('/google-login', async (req, res) => {
     let user = await User.findOne({ email });
 
     if (!user) {
+      console.log('User not found, creating new user');
       user = new User({ username: name, email, password: email });
       await user.save();
     }

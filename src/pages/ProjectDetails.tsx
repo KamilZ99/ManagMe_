@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getProjects, createProject, updateProject, deleteProject } from '../api/projectApi';
+import { getProjects, createProject, updateProject, deleteProject } from '../api/ProjectApi';
 import { getUser } from '../api/authApi';
 import ProjectForm from '../components/ProjectForm';
 import { Project } from '../types';
