@@ -1,39 +1,48 @@
 import axios from 'axios';
-import Project from '../models/Project';
+import { Project } from '../types';
 
-const API_URL = 'http://localhost:3000/projects';
+const BASE_URL = 'http://localhost:5000/api/projects';
 
-export const getProjects = async (userId: string): Promise<Project[]> => {
-  const response = await axios.get(`${API_URL}?ownerId=${userId}`, {
+export const createProject = async (projectData: { name: string, description: string }, token: string): Promise<Project> => {
+  const response = await axios.post(BASE_URL, projectData, {
     headers: {
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
+      'x-auth-token': token
     }
   });
   return response.data;
 };
 
-export const addProject = async (project: Project): Promise<Project> => {
-  const response = await axios.post(API_URL, project, {
+export const getProjects = async (token: string): Promise<Project[]> => {
+  const response = await axios.get(BASE_URL, {
     headers: {
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
+      'x-auth-token': token
     }
   });
   return response.data;
 };
 
-export const updateProject = async (project: Project): Promise<Project> => {
-  const response = await axios.put(`${API_URL}/${project._id}`, project, {
+export const getProject = async (projectId: string, token: string): Promise<Project> => {
+  const response = await axios.get(`${BASE_URL}/${projectId}`, {
     headers: {
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
+      'x-auth-token': token
     }
   });
   return response.data;
 };
 
-export const deleteProject = async (projectId: string): Promise<void> => {
-  await axios.delete(`${API_URL}/${projectId}`, {
+export const updateProject = async (projectId: string, projectData: { name: string, description: string }, token: string): Promise<Project> => {
+  const response = await axios.put(`${BASE_URL}/${projectId}`, projectData, {
     headers: {
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
+      'x-auth-token': token
+    }
+  });
+  return response.data;
+};
+
+export const deleteProject = async (projectId: string, token: string): Promise<void> => {
+  await axios.delete(`${BASE_URL}/${projectId}`, {
+    headers: {
+      'x-auth-token': token
     }
   });
 };

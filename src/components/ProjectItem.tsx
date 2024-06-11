@@ -1,55 +1,31 @@
-// ProjectItem.tsx
-import React from 'react';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { Project } from '../models/Project';
-import { setEditingProject, removeProject } from '../store/slices/projectSlice';
-import { AppDispatch } from '../store/store'; // Import AppDispatch
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { getProject } from '../api/projectApi';
+import { Project } from '../types';
 
-interface ProjectItemProps {
-  project: Project;
-}
+const ProjectItem: React.FC = () => {
+  const { projectId } = useParams<{ projectId: string }>();
+  const [project, setProject] = useState<Project | null>(null);
 
-const ProjectItem: React.FC<ProjectItemProps> = ({ project }) => {
-  const dispatch: AppDispatch = useDispatch();
-  const navigate = useNavigate();
+  useEffect(() => {
+    const fetchProject = async () => {
+      const token = localStorage.getItem('token');
+      if (token && projectId) {
+        const fetchedProject = await getProject(projectId, token);
+        setProject(fetchedProject);
+      }
+    };
+    fetchProject();
+  }, [projectId]);
 
-  const handleEdit = () => {
-    dispatch(setEditingProject(project));
-  };
-
-  const handleDelete = () => {
-    dispatch(removeProject(project._id));
-  };
-
-  const handleViewStories = () => {
-    navigate(`/projects/${project._id}/stories`);
-  };
+  if (!project) {
+    return <p>Loading...</p>;
+  }
 
   return (
-    <div className="bg-white shadow-lg rounded-lg p-6 mb-4 hover:shadow-xl transition-shadow duration-300 ease-in-out">
-      <h3 className="text-2xl font-bold mb-2">{project.name}</h3>
-      <p className="text-gray-700 mb-4">{project.description}</p>
-      <div className="flex space-x-2">
-        <button 
-          onClick={handleEdit} 
-          className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-        >
-          Edit
-        </button>
-        <button 
-          onClick={handleDelete} 
-          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-        >
-          Delete
-        </button>
-        <button 
-          onClick={handleViewStories} 
-          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-        >
-          View Stories
-        </button>
-      </div>
+    <div>
+      <h2>{project.name}</h2>
+      <p>{project.description}</p>
     </div>
   );
 };

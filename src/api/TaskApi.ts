@@ -1,74 +1,39 @@
-import Task from '../models/Task';
+import axios from 'axios';
+import { Task } from '../types';
 
-interface TaskData {
-  id: string;
-  name: string;
-  description: string;
-  priority: 'low' | 'medium' | 'high';
-  storyId: string;
-  estimatedTime: number;
-  status: 'todo' | 'doing' | 'done';
-  creationDate: string; 
-  startDate?: string; 
-  endDate?: string; 
-  ownerId?: string;
-}
+const BASE_URL = 'http://localhost:5000/api/tasks';
 
-class TaskApi {
-  private static readonly STORAGE_KEY = 'tasks';
+export const createTask = async (taskData: { name: string, description: string, priority: string, storyId: string, estimatedTime: number, status: 'todo' | 'doing' | 'done', startDate?: Date, endDate?: Date, ownerId?: string }, token: string): Promise<Task> => {
+  const response = await axios.post(BASE_URL, taskData, {
+    headers: {
+      'x-auth-token': token
+    }
+  });
+  return response.data;
+};
 
-  static getTasks(): Task[] {
-    const tasks = localStorage.getItem(this.STORAGE_KEY);
-    const parsedTasks: TaskData[] = tasks ? JSON.parse(tasks) : [];
-    return parsedTasks.map((task: TaskData) => new Task(
-      task.id,
-      task.name,
-      task.description,
-      task.priority,
-      task.storyId,
-      task.estimatedTime,
-      task.status,
-      new Date(task.creationDate),
-      task.startDate ? new Date(task.startDate) : undefined,
-      task.endDate ? new Date(task.endDate) : undefined,
-      task.ownerId
-    ));
-  }
+export const getTasks = async (storyId: string, token: string): Promise<Task[]> => {
+  const response = await axios.get(`${BASE_URL}?storyId=${storyId}`, {
+    headers: {
+      'x-auth-token': token
+    }
+  });
+  return response.data;
+};
 
-  static saveTasks(tasks: Task[]): void {
-    const tasksData: TaskData[] = tasks.map(task => ({
-      id: task.id,
-      name: task.name,
-      description: task.description,
-      priority: task.priority,
-      storyId: task.storyId,
-      estimatedTime: task.estimatedTime,
-      status: task.status,
-      creationDate: task.creationDate.toISOString(),
-      startDate: task.startDate ? task.startDate.toISOString() : undefined,
-      endDate: task.endDate ? task.endDate.toISOString() : undefined,
-      ownerId: task.ownerId
-    }));
-    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(tasksData));
-  }
+export const updateTask = async (taskId: string, taskData: { name: string, description: string, priority: string, estimatedTime: number, status: 'todo' | 'doing' | 'done', startDate?: Date, endDate?: Date }, token: string): Promise<Task> => {
+  const response = await axios.put(`${BASE_URL}/${taskId}`, taskData, {
+    headers: {
+      'x-auth-token': token
+    }
+  });
+  return response.data;
+};
 
-  static addTask(task: Task): void {
-    const tasks = this.getTasks();
-    tasks.push(task);
-    this.saveTasks(tasks);
-  }
-
-  static updateTask(updatedTask: Task): void {
-    let tasks = this.getTasks();
-    tasks = tasks.map(task => task.id === updatedTask.id ? updatedTask : task);
-    this.saveTasks(tasks);
-  }
-
-  static deleteTask(taskId: string): void {
-    let tasks = this.getTasks();
-    tasks = tasks.filter(task => task.id !== taskId);
-    this.saveTasks(tasks);
-  }
-}
-
-export default TaskApi;
+export const deleteTask = async (taskId: string, token: string): Promise<void> => {
+  await axios.delete(`${BASE_URL}/${taskId}`, {
+    headers: {
+      'x-auth-token': token
+    }
+  });
+};

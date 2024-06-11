@@ -1,86 +1,99 @@
-// ProjectForm.tsx
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState, AppDispatch } from '../store/store';
-import { createProject, editProject, setEditingProject } from '../store/slices/projectSlice';
-import { v4 as uuidv4 } from 'uuid';
-import { useNavigate } from 'react-router-dom';
-import { Project } from '../models/Project';
+import axios from 'axios';
 
-const ProjectForm: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate();
-  const editingProject = useSelector((state: RootState) => state.project.editingProject);
-  const authUser = useSelector((state: RootState) => state.auth.user); // Get the authenticated user
-  const [name, setName] = useState(editingProject ? editingProject.name : '');
-  const [description, setDescription] = useState(editingProject ? editingProject.description : '');
+type ProjectFormProps = {
+  onSubmit: (data: { name: string, description: string, assignedUserId?: string }) => void;
+  initialData?: { name: string, description: string, assignedUserId?: string } | null;
+};
+
+const ProjectForm: React.FC<ProjectFormProps> = ({ onSubmit, initialData }) => {
+  const [name, setName] = useState(initialData?.name || '');
+  const [description, setDescription] = useState(initialData?.description || '');
+  const [assignedUserId, setAssignedUserId] = useState(initialData?.assignedUserId || '');
+  const [users, setUsers] = useState<{ _id: string, username: string }[]>([]);
 
   useEffect(() => {
-    if (editingProject) {
-      setName(editingProject.name);
-      setDescription(editingProject.description);
+    if (initialData) {
+      setName(initialData.name);
+      setDescription(initialData.description);
+      setAssignedUserId(initialData.assignedUserId || '');
     }
-  }, [editingProject]);
+
+    const fetchUsers = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        const response = await axios.get('http://localhost:5000/api/auth/users', {
+          headers: {
+            'x-auth-token': token
+          }
+        });
+        setUsers(response.data);
+      }
+    };
+
+    fetchUsers();
+  }, [initialData]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!authUser) return; // Ensure user is authenticated
-
-    const project: Project = {
-      _id: editingProject ? editingProject._id : uuidv4(),
-      name,
-      description,
-      ownerId: authUser.id // Set the ownerId to the authenticated user's id
-    };
-    if (editingProject) {
-      dispatch(editProject(project));
-    } else {
-      dispatch(createProject(project));
-    }
+    onSubmit({ name, description, assignedUserId });
     setName('');
     setDescription('');
-    dispatch(setEditingProject(null));
-    navigate('/'); 
+    setAssignedUserId('');
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white shadow-md rounded-lg p-6 mb-4 animate-fadeIn">
-      <h2 className="text-2xl font-bold mb-4">Create New Project 🚀</h2>
-      <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
-          Project Name 📂
+    <form onSubmit={handleSubmit}>
+      <div className="mb-6">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="projectName">
+          Project Name 📁
         </label>
-        <input
-          type="text"
-          id="name"
-          value={name}
-          onChange={e => setName(e.target.value)}
-          placeholder="Project Name"
-          required
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        <input 
+          type="text" 
+          id="projectName"
+          value={name} 
+          onChange={(e) => setName(e.target.value)} 
+          placeholder="Project Name" 
+          className="shadow appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          required 
         />
       </div>
-      <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
+      <div className="mb-6">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="projectDescription">
           Project Description 📝
         </label>
-        <textarea
-          id="description"
-          value={description}
-          onChange={e => setDescription(e.target.value)}
-          placeholder="Project Description"
-          required
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        <input 
+          type="text" 
+          id="projectDescription"
+          value={description} 
+          onChange={(e) => setDescription(e.target.value)} 
+          placeholder="Project Description" 
+          className="shadow appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          required 
         />
       </div>
-      <div className="flex items-center justify-between">
-        <button
-          type="submit"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+      <div className="mb-6">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="assignedUserId">
+          Assign To 👤
+        </label>
+        <select
+          id="assignedUserId"
+          value={assignedUserId}
+          onChange={(e) => setAssignedUserId(e.target.value)}
+          className="shadow appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         >
-          {editingProject ? 'Update' : 'Add'} Project
-        </button>
+          <option value="">Select User</option>
+          {users.map(user => (
+            <option key={user._id} value={user._id}>{user.username}</option>
+          ))}
+        </select>
       </div>
+      <button 
+        type="submit" 
+        className="bg-[#3b81f6] text-white w-full py-3 rounded-lg hover:bg-purple-600 transition duration-300 shadow"
+      >
+        {initialData ? 'Update Project' : 'Add Project'}
+      </button>
     </form>
   );
 };

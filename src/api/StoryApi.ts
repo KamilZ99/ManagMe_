@@ -1,34 +1,39 @@
-import Story from '../models/Story';
+import axios from 'axios';
+import { Story } from '../types';
 
-class StoryApi {
-  private static readonly STORAGE_KEY = 'stories';
+const BASE_URL = 'http://localhost:5000/api/stories';
 
-  static getStories(): Story[] {
-    const stories = localStorage.getItem(this.STORAGE_KEY);
-    return stories ? JSON.parse(stories) : [];
-  }
+export const createStory = async (storyData: { name: string, description: string, priority: string, status: string, projectId: string }, token: string): Promise<Story> => {
+  const response = await axios.post(BASE_URL, storyData, {
+    headers: {
+      'x-auth-token': token
+    }
+  });
+  return response.data;
+};
 
-  static saveStories(stories: Story[]): void {
-    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(stories));
-  }
+export const getStories = async (projectId: string, token: string): Promise<Story[]> => {
+  const response = await axios.get(`${BASE_URL}?projectId=${projectId}`, {
+    headers: {
+      'x-auth-token': token
+    }
+  });
+  return response.data;
+};
 
-  static addStory(story: Story): void {
-    const stories = this.getStories();
-    stories.push(story);
-    this.saveStories(stories);
-  }
+export const updateStory = async (storyId: string, storyData: { name: string, description: string, priority: string, status: string, projectId: string }, token: string): Promise<Story> => {
+  const response = await axios.put(`${BASE_URL}/${storyId}`, storyData, {
+    headers: {
+      'x-auth-token': token
+    }
+  });
+  return response.data;
+};
 
-  static updateStory(updatedStory: Story): void {
-    let stories = this.getStories();
-    stories = stories.map(story => story.id === updatedStory.id ? updatedStory : story);
-    this.saveStories(stories);
-  }
-
-  static deleteStory(storyId: string): void {
-    let stories = this.getStories();
-    stories = stories.filter(story => story.id !== storyId);
-    this.saveStories(stories);
-  }
-}
-
-export default StoryApi;
+export const deleteStory = async (storyId: string, token: string): Promise<void> => {
+  await axios.delete(`${BASE_URL}/${storyId}`, {
+    headers: {
+      'x-auth-token': token
+    }
+  });
+};
