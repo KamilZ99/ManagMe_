@@ -44,10 +44,24 @@ const Profile: React.FC = () => {
     fetchNotifications();
   }, [navigate]);
 
+  const markAsRead = async (id: string) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      await axios.put(`http://localhost:5000/api/notifications/markAsRead/${id}`, {}, {
+        headers: {
+          'x-auth-token': token
+        }
+      });
+      setNotifications(notifications.filter(notification => notification._id !== id));
+    }
+  };
+
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
+
+ 
 
   if (!user) {
     return <p>Loading...</p>;
@@ -61,20 +75,33 @@ const Profile: React.FC = () => {
         <p className="text-gray-700 dark:text-gray-300 mb-2"><strong>Username:</strong> {user.username}</p>
         <p className="text-gray-700 dark:text-gray-300 mb-2"><strong>Email:</strong> {user.email}</p>
         <p className="text-gray-700 dark:text-gray-300 mb-4"><strong>Role:</strong> {user.role}</p>
+        
+       
+        
         <button
           onClick={handleLogout}
           className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-300"
         >
           Logout
         </button>
+        
         <h2 className="text-xl font-bold mt-6 text-black dark:text-white">Notifications</h2>
-      
         <ul className="mt-4 space-y-2">
           {notifications.map(notification => (
-            <li key={notification._id} className="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg shadow-md">
-              {notification.message}
+            <li key={notification._id} className="bg-gray-100 dark:white p-4 rounded-lg shadow-md">
+              <div className="flex justify-between items-center">
+                <span>{notification.message}</span>
+                {!notification.read && (
+                  <button
+                    onClick={() => markAsRead(notification._id)}
+                    className="ml-4 bg-gray-500 text-white px-2 py-1 rounded"
+                  >
+                    Mark as read
+                  </button>
+                )}
+              </div>
             </li>
-          ))}
+          ))} 
         </ul>
       </div>
     </div>

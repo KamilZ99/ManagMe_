@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getProject } from '../api/projectApi';
+import { getProject } from '../api/ProjectApi';
 import { Project } from '../types';
 
 const ProjectItem: React.FC = () => {

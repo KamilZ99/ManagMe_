@@ -2,6 +2,8 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { googleLogout } from '@react-oauth/google';
+import UnreadNotificationCounter from './UnreadNotificationCounter';
+import NotificationsCounter from './NotificationsCounter';
 
 const Navbar: React.FC = () => {
   const { logout } = useAuth();
@@ -31,12 +33,16 @@ const Navbar: React.FC = () => {
                 Profile
               </Link>
             </li>
+            <li>
+              <UnreadNotificationCounter />
+            </li>
           </ul>
           <button onClick={handleLogout} className="text-black dark:text-white px-4 py-2 rounded-full border border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600 transition duration-300">
             Logout
           </button>
         </div>
       </div>
+      <NotificationsCounter />
     </nav>
   );
 };

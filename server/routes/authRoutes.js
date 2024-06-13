@@ -154,4 +154,24 @@ router.get('/users', auth, async (req, res) => {
   }
 });
 
+router.put('/users/:id/role', auth, async (req, res) => {
+  const { id } = req.params;
+  const { role } = req.body;
+
+  try {
+    let user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    user.role = role;
+    await user.save();
+
+    res.json({ msg: 'User role updated', user });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
 module.exports = router;
